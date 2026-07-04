@@ -1,0 +1,21 @@
+ try {
+        let response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer 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"
+            },
+            body: JSON.stringify({
+                model: "llama-3.1-8b-instant",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are a smart study planner. Give short and practical study plans."
+                    },
+                    {
+                        role: "user",
+                        content: `Tasks:\n${taskText}\n\nCreate a smart study plan.`
+                    }
+                ]
+            })
+        });

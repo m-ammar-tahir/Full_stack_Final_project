@@ -1,0 +1,315 @@
+/* ========== ROOT VARIABLES ========== */
+:root {
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --primary: #4f46e5;
+    --secondary: #06b6d4;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --border: rgba(0,0,0,0.08);
+    --shadow: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 16px;
+}
+
+/* DARK MODE */
+body.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+}
+
+/* ========== GLOBAL ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    transition: 0.3s;
+}
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px 0;
+}
+
+/* ========== HEADER ========== */
+header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 25px 0;
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo i {
+    font-size: 30px;
+}
+
+.tagline {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-top: 5px;
+}
+
+/* ========== SECTIONS ========== */
+.section {
+    background: var(--card);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* ========== BUTTONS ========== */
+button {
+    cursor: pointer;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-voice {
+    background: var(--secondary);
+    color: white;
+}
+
+/* ========== TOOLBAR ========== */
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* ========== INPUTS ========== */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.input-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+input, select {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    outline: none;
+    background: transparent;
+    color: var(--text);
+}
+
+input:focus, select:focus {
+    border-color: var(--primary);
+}
+
+/* ========== AI GRID ========== */
+.ai-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.ai-card {
+    padding: 15px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg);
+}
+
+.ai-response {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* ========== CHATBOT ========== */
+.chatbot-container {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.chat-messages {
+    height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background: var(--card);
+}
+
+.chat-input-area {
+    display: flex;
+    border-top: 1px solid var(--border);
+}
+
+.chat-input-area input {
+    flex: 1;
+    border: none;
+}
+
+/* ========== POMODORO ========== */
+.timer-display {
+    font-size: 40px;
+    text-align: center;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.timer-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.timer-btn.start { background: var(--success); color: white; }
+.timer-btn.pause { background: var(--danger); color: white; }
+.timer-btn.reset { background: gray; color: white; }
+
+/* ========== FILTERS ========== */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* ========== PROGRESS ========== */
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+/* ========== STATS ========== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.stat-card {
+    padding: 15px;
+    border-radius: var(--radius);
+    background: var(--bg);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* ========== TASK LIST ========== */
+#taskList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#taskList li {
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ========== FOOTER ========== */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .input-row {
+        flex-direction: column;
+    }
+
+    .toolbar {
+        flex-direction: column;
+    }
+}

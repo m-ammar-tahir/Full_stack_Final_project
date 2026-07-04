@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>✨ AI Study Wizard | Smart Planner + Dark Mode Toggle</title>
+<!-- Tailwind CSS + custom config -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts + Font Awesome 6 -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  body {
+    transition: background-color 0.3s ease, color 0.2s ease;
+  }
+  /* dark mode class toggled on body */
+  body.dark {
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+  /* smooth card transitions */
+  .card {
+    transition: all 0.25s ease;
+  }
+  .filter-btn.active {
+    background-color: #4f46e5 !important;
+    color: white !important;
+    box-shadow: 0 8px 18px -6px rgba(79, 70, 229, 0.45);
+    border-color: #4f46e5 !important;
+  }
+  .task-item {
+    transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  }
+  .drop-zone-active {
+    background-color: #e0e7ff;
+    border-color: #4f46e5;
+    transform: scale(0.99);
+  }
+  body.dark .drop-zone-active {
+    background-color: #1e293b;
+    border-color: #818cf8;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .calendar-day {
+    transition: 0.1s ease;
+    cursor: pointer;
+  }
+  /* custom scroll */
+  .custom-scroll::-webkit-scrollbar {
+    width: 5px;
+  }
+  .custom-scroll::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: #a5b4fc;
+    border-radius: 10px;
+  }
+  body.dark .custom-scroll::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+  body.dark .custom-scroll::-webkit-scrollbar-thumb {
+    background: #4f46e5;
+  }
+  /* glass morph effect */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(2px);
+  }
+  body.dark .glass-card {
+    background: rgba(30, 41, 59, 0.85);
+  }
+</style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 transition-colors duration-300">
+
+<!-- Header with clickable dark mode toggle + modern glass -->
+<header class="sticky top-0 z-30 backdrop-blur-md bg-white/70 dark:bg-slate-900/80 border-b border-indigo-100 dark:border-indigo-800/50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-5 py-4 flex flex-wrap justify-between items-center gap-3">
+    <div class="flex items-center gap-3">
+      <div class="bg-gradient-to-tr from-indigo-500 to-fuchsia-500 p-2 rounded-2xl shadow-lg">
+        <i class="fas fa-brain text-white text-xl"></i>
+      </div>
+      <h1 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-700 to-cyan-600 dark:from-indigo-400 dark:to-cyan-400 bg-clip-text text-transparent">AI Study Wizard</h1>
+    </div>
+    <!-- 🌙 Dark mode toggle - clickable, visible, works perfectly -->
+    <button id="darkModeToggle" class="px-4 py-2 rounded-xl bg-indigo-100 dark:bg-slate-700 text-indigo-700 dark:text-yellow-300 shadow-md hover:shadow-lg transition-all flex items-center gap-2 font-medium">
+      <i class="fas fa-moon dark:fa-sun"></i>
+      <span class="text-sm hidden sm:inline">Dark mode</span>
+    </button>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+<!-- IMPORT/EXPORT premium card -->
+<div class="card bg-white dark:bg-slate-800/90 rounded-2xl shadow-xl border border-indigo-100 dark:border-indigo-800/50 overflow-hidden transition-all">
+  <div class="bg-indigo-50 dark:bg-indigo-900/40 px-5 py-3 flex items-center gap-2 border-b border-indigo-100 dark:border-indigo-800">
+    <i class="fas fa-cloud-upload-alt text-indigo-500 text-lg"></i>
+    <h2 class="font-bold text-gray-800 dark:text-gray-200">Universal Import/Export · Any file type</h2>
+  </div>
+  <div class="p-5 space-y-4">
+    <div class="flex flex-wrap gap-3 items-center">
+      <button onclick="exportAllData()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow-md hover:shadow-lg flex items-center gap-2 transition-all hover:scale-[1.02]"><i class="fas fa-database"></i> JSON Master</button>
+      <button onclick="triggerImportFile()" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-md flex items-center gap-2 transition-all"><i class="fas fa-file-import"></i> Import JSON</button>
+      <div class="relative group">
+        <button class="px-4 py-2 border rounded-xl bg-gray-100 dark:bg-slate-700 dark:border-slate-600 hover:bg-gray-200 transition flex gap-2"><i class="fas fa-chevron-down"></i> More formats</button>
+        <div class="absolute top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-xl shadow-xl border dark:border-slate-700 hidden group-hover:block z-20 min-w-[180px]">
+          <button onclick="exportAsCSV()" class="w-full text-left px-4 py-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-t-xl"><i class="fas fa-file-csv"></i> CSV</button>
+          <button onclick="exportAsBackup()" class="w-full text-left px-4 py-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/40"><i class="fas fa-archive"></i> Backup (.backup)</button>
+          <button onclick="exportAsText()" class="w-full text-left px-4 py-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/40"><i class="fas fa-file-alt"></i> Plain Text</button>
+          <button onclick="exportAsHTML()" class="w-full text-left px-4 py-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-b-xl"><i class="fas fa-code"></i> HTML Report</button>
+        </div>
+      </div>
+      <button onclick="clearAllTasks()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl shadow flex gap-2 transition-all"><i class="fas fa-trash-alt"></i> Clear all</button>
+    </div>
+    <!-- Drag & drop zone interactive -->
+    <div id="dropZone" class="border-2 border-dashed border-indigo-300 dark:border-indigo-500/60 rounded-xl p-5 text-center bg-indigo-50/40 dark:bg-indigo-950/30 cursor-pointer transition-all hover:bg-indigo-100/60" onclick="triggerImportFile()">
+      <i class="fas fa-hand-pointer text-indigo-400 text-3xl mb-2"></i>
+      <p class="text-sm font-medium">📂 Drag & drop any file: JSON, CSV, TXT, .backup, HTML → auto-detects tasks</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Supports all exports: tasks, priority, due date, completion</p>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TASK CARD - auto clear & modern inputs -->
+<div class="card bg-white dark:bg-slate-800/90 rounded-2xl shadow-xl border p-5 transition-all">
+  <div class="flex items-center gap-2 mb-4"><i class="fas fa-feather-alt text-indigo-500 text-xl"></i><h2 class="font-bold text-xl">Create new task</h2><span class="text-xs bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 px-2 py-0.5 rounded-full ml-2">Auto-clear fields</span></div>
+  <div class="grid md:grid-cols-2 gap-4">
+    <input id="subject" placeholder="Subject / Course" class="p-3 rounded-xl border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-300 outline-none">
+    <input id="taskInput" placeholder="What to study? (required)" class="p-3 rounded-xl border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-300 outline-none">
+  </div>
+  <div class="grid md:grid-cols-4 gap-4 mt-4">
+    <input type="date" id="dueDate" class="p-3 rounded-xl border dark:bg-slate-700 dark:border-slate-600">
+    <input type="time" id="dueTime" class="p-3 rounded-xl border dark:bg-slate-700 dark:border-slate-600">
+    <select id="priority" class="p-3 rounded-xl border dark:bg-slate-700 dark:border-slate-600 bg-white dark:bg-slate-700">
+      <option>Low</option><option selected>Medium</option><option>High</option>
+    </select>
+    <button onclick="addTaskAndClear()" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md flex items-center justify-center gap-2 transition-all py-3"><i class="fas fa-plus-circle"></i> Add task</button>
+  </div>
+  <p class="text-xs text-indigo-500 dark:text-indigo-400 mt-2 flex items-center gap-1"><i class="fas fa-magic"></i> After adding, all inputs reset automatically — ready for next task.</p>
+</div>
+
+<!-- AI + Pomodoro + Chat Assistant Row -->
+<div class="grid md:grid-cols-3 gap-5">
+  <div class="card bg-white dark:bg-slate-800/90 rounded-xl shadow p-5 hover:shadow-md transition">
+    <div class="flex justify-between"><i class="fas fa-robot text-indigo-500 text-2xl"></i></div>
+    <button onclick="giveSuggestion()" class="mt-2 w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2.5 rounded-xl font-medium shadow">✨ AI Study Suggestion</button>
+    <p id="aiText" class="mt-3 text-sm text-gray-600 dark:text-gray-300 italic">Click for smart plan based on pending tasks.</p>
+  </div>
+  <div class="card bg-white dark:bg-slate-800/90 rounded-xl shadow p-5">
+    <button onclick="toggleChatbot()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-2.5 rounded-xl font-medium shadow"><i class="fas fa-comment-dots"></i> Study Chat Assistant</button>
+    <div id="chatbotContainer" class="hidden mt-3">
+      <div id="chatMessages" class="h-44 overflow-auto text-sm bg-indigo-50 dark:bg-slate-700/70 rounded-xl p-2 space-y-1"></div>
+      <div class="flex mt-2 gap-1"><input id="chatInput" placeholder="Ask anything..." class="flex-1 p-2 rounded-xl border dark:bg-slate-700 dark:border-slate-600"><button onclick="sendChatMessage()" class="bg-indigo-600 px-4 rounded-xl text-white">Send</button></div>
+    </div>
+  </div>
+  <div class="card bg-white dark:bg-slate-800/90 rounded-xl shadow p-5 text-center">
+    <div class="flex justify-center"><i class="fas fa-hourglass-half text-yellow-500 text-2xl"></i></div>
+    <div id="pomodoroDisplay" class="text-5xl font-bold my-2 font-mono tracking-wide">25:00</div>
+    <div class="flex gap-2 justify-center mt-2">
+      <button onclick="startPomodoro()" class="bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-sm">▶ Start</button>
+      <button onclick="pausePomodoro()" class="bg-gray-500 text-white px-4 py-1.5 rounded-lg">⏸ Pause</button>
+      <button onclick="resetPomodoro()" class="bg-rose-500 text-white px-4 py-1.5 rounded-lg">⟳ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- Smart Filters + Progress Dashboard -->
+<div class="grid md:grid-cols-3 gap-5">
+  <div class="card bg-white dark:bg-slate-800/90 rounded-xl shadow p-5 md:col-span-2">
+    <h3 class="font-semibold flex gap-2 mb-3"><i class="fas fa-sliders-h text-indigo-500"></i> Smart filters</h3>
+    <div class="flex flex-wrap gap-2" id="filterButtonsGroup">
+      <button data-filter="all" class="filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-gray-200 dark:bg-slate-700">📋 All</button>
+      <button data-filter="pending" class="filter-btn px-4 py-2 rounded-full text-sm bg-gray-200 dark:bg-slate-700">⏳ Pending</button>
+      <button data-filter="completed" class="filter-btn px-4 py-2 rounded-full text-sm">✅ Done</button>
+      <button data-filter="high" class="filter-btn px-4 py-2 rounded-full text-sm">🔥 High priority</button>
+      <button data-filter="overdue" class="filter-btn px-4 py-2 rounded-full text-sm">⚠️ Overdue</button>
+    </div>
+  </div>
+  <div class="card bg-white dark:bg-slate-800/90 rounded-xl shadow p-5">
+    <div class="flex justify-between items-center"><span class="font-bold">📈 Weekly progress</span><span id="completionPercent" class="text-lg font-bold text-indigo-600 dark:text-indigo-400">0%</span></div>
+    <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mt-2"><div id="progress" class="bg-indigo-600 h-3 rounded-full w-0 transition-all duration-500"></div></div>
+    <div class="grid grid-cols-2 gap-2 mt-4 text-center text-sm"><div>📋 Total: <span id="totalTasks" class="font-bold">0</span></div><div>✅ Done: <span id="completedTasks" class="text-green-600 font-bold">0</span></div><div>⚠️ Overdue: <span id="overdueTasks" class="text-red-500 font-bold">0</span></div><div>🔥 Streak: <span id="streakCount" class="text-amber-500 font-bold">0</span></div></div>
+  </div>
+</div>
+
+<!-- Analytics & Calendar double view -->
+<div class="card bg-white dark:bg-slate-800/90 rounded-xl shadow p-5">
+  <div class="flex gap-4 border-b pb-3 dark:border-slate-700">
+    <button onclick="showAnalytics()" class="px-5 py-2 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium"><i class="fas fa-chart-pie"></i> Analytics Chart</button>
+    <button onclick="showCalendar()" class="px-5 py-2 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300"><i class="fas fa-calendar-alt"></i> Calendar View</button>
+  </div>
+  <div id="analyticsContainer" class="hidden mt-4">
+    <canvas id="completionChart" width="400" height="280" style="max-height: 280px; width:100%"></canvas>
+  </div>
+  <div id="calendarContainer" class="hidden mt-4"></div>
+  <p id="analyticsHint" class="text-center text-xs text-gray-400 mt-2">📊 Real-time distribution & clickable calendar days</p>
+</div>
+
+<!-- TASK LIST with modern design -->
+<div class="card bg-white dark:bg-slate-800/90 rounded-xl shadow overflow-hidden">
+  <div class="bg-indigo-50 dark:bg-indigo-900/30 px-5 py-3 border-b dark:border-slate-700"><h2 class="font-bold flex items-center gap-2"><i class="fas fa-list-check text-indigo-600"></i>Study Tasks <span id="filterBadge" class="text-sm font-normal text-gray-500"></span></h2></div>
+  <ul id="taskList" class="divide-y divide-gray-100 dark:divide-gray-700 max-h-[460px] overflow-y-auto custom-scroll"></ul>
+</div>
+
+</div>
+
+<footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400 border-t dark:border-slate-800 mt-4">✨ AI Study Planner • Full import/export all formats • Auto-clear fields • Dark mode ready
+ <h3 class="py-4" > Created by:Muhammad Atif Aslam</h3>
+</footer>
+
+<script src="script.js">
+
+</script>
+<input type="file" id="importFileInput" accept=".json,.txt,.csv,.backup" style="display: none;" onchange="handleFullImport(event)">
+</body>
+</html>
